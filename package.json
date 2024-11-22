@@ -36,11 +36,11 @@
     "npm": "^10.9.0"
   },
   "_moduleAliases": {
-    "@models": "dist/models",
-    "@controllers": "dist/controllers",
-    "@middlewares": "dist/middlewares",
-    "@routes": "dist/routes",
-    "@config": "dist/config",
+    "@models": "dist/src/models",
+    "@controllers": "dist/src/controllers",
+    "@middlewares": "dist/src/middlewares",
+    "@routes": "dist/src/routes",
+    "@config": "dist/src/config",
     "@types": "dist/types.js"
   }
 }

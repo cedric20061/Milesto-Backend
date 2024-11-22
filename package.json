@@ -1,0 +1,46 @@
+{
+  "name": "back-end",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "dev": "ts-node-dev --respawn --loader ts-node/esm main.mts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "module-alias": "^2.2.3",
+    "mongodb": "^6.10.0",
+    "mongoose": "^8.8.0",
+    "nodemailer": "^6.9.16",
+    "nodemon": "^3.1.7"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cookie-parser": "^1.4.7",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^22.8.6",
+    "@types/nodemailer": "^6.4.17",
+    "i": "^0.3.7",
+    "npm": "^10.9.0"
+  },
+  "_moduleAliases": {
+    "@models": "dist/models",
+    "@controllers": "dist/controllers",
+    "@middlewares": "dist/middlewares",
+    "@routes": "dist/routes",
+    "@config": "dist/config",
+    "@types": "dist/types.js"
+  }
+}

@@ -16,14 +16,14 @@
     "experimentalDecorators": true, // Optional: required for some decorators
     "baseUrl": "./", // Définit la base de résolution des modules
     "paths": {
-      "@models/*": ["models/*"],
-      "@controllers/*": ["controllers/*"],
-      "@routes/*": ["routes/*"],
-      "@config/*": ["config/*"],
-      "@middlewares/*": ["middlewares/*"],
+      "@models/*": ["src/models/*"],
+      "@controllers/*": ["src/controllers/*"],
+      "@routes/*": ["src/routes/*"],
+      "@config/*": ["src/config/*"],
+      "@middlewares/*": ["src/middlewares/*"],
       "@types": ["types.ts"]
     }
   },
   "include": ["src/**/*", "main.ts", "types.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist"]
 }

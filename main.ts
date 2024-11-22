@@ -2,7 +2,7 @@ import "module-alias/register";
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import connectDB from "@config/db.js";
+import connectDB from "./src/config/db";
 import authRoutes from "@routes/authRoutes";
 import goalsRoutes from "@routes/goalsRoutes";
 import dailySchedule from "@routes/dailyScheduleRoutes";

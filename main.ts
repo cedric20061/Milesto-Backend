@@ -3,10 +3,10 @@ import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import connectDB from "./src/config/db";
-import authRoutes from "@routes/authRoutes";
-import goalsRoutes from "@routes/goalsRoutes";
-import dailySchedule from "@routes/dailyScheduleRoutes";
-import userRoutes from "@routes/userRoutes";
+import authRoutes from "./src/routes/authRoutes";
+import goalsRoutes from "./src/routes/goalsRoutes";
+import dailySchedule from "./src/routes/dailyScheduleRoutes";
+import userRoutes from "./src/routes/userRoutes";
 import cors from "cors";
 
 dotenv.config();

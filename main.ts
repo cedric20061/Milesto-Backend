@@ -34,10 +34,11 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: process.env.HOST_NAME,
+    origin: "*", // Accepte toutes les origines
     credentials: true,
   })
 );
+
 app.options("*", cors());
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", process.env.HOST_NAME || "*");

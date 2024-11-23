@@ -1,4 +1,19 @@
 import "module-alias/register";
+
+// Configure module-alias pour corriger les chemins
+import moduleAlias from "module-alias";
+
+if (process.env.NODE_ENV === "production") {
+  moduleAlias.addAliases({
+    "@models": __dirname + "/src/models",
+    "@controllers": __dirname + "/src/controllers",
+    "@middlewares": __dirname + "/src/middlewares",
+    "@routes": __dirname + "/src/routes",
+    "@config": __dirname + "/src/config",
+    "@types": __dirname + "/types",
+  });
+}
+
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";

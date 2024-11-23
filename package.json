@@ -30,6 +30,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.7",
+    "@types/module-alias": "^2.0.4",
     "@types/node": "^22.8.6",
     "@types/nodemailer": "^6.4.17",
     "i": "^0.3.7",

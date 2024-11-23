@@ -40,7 +40,7 @@ app.use(
 );
 app.options("*", cors());
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", process.env.ALLOWED_ORIGIN || "*");
+  res.header("Access-Control-Allow-Origin", process.env.HOST_NAME || "*");
   res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();

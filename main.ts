@@ -39,20 +39,24 @@ app.use(
   })
 );
 app.options("*", cors());
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", process.env.HOST_NAME || "*");
-  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  next();
-});
-app.use((req, res, next) => {
-  console.log("Request Origin:", req.headers.origin);
-  next();
-});
+
 app.use(authRoutes);
 app.use(goalsRoutes);
 app.use(dailySchedule);
 app.use(userRoutes);
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", process.env.HOST_NAME || "*");
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate"
+  );
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+
+  next();
+});
 app.get("/", (req, res) => {
   res.send("Welcome to the API!");
 });

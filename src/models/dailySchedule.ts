@@ -29,7 +29,6 @@ DailyScheduleSchema.pre('save', async function (next) {
                 await DailySchedule.findByIdAndDelete(oldestSchedule._id);
             }
         }
-        this.createdAt = new Date();
         next();
     } catch (error) {
         next(error);

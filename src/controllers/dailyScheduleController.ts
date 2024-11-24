@@ -61,6 +61,7 @@ export const getUserDailySchedule = async (
         .json({ message: "No daily schedule found for this date" });
       return;
     }
+    res.setHeader("Cache-Control", "no-store");
     res.status(200).json({ data: schedule });
   } catch (error) {
     res.status(500).json({ message: "Error retrieving daily schedule", error });

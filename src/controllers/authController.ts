@@ -12,11 +12,8 @@ const generateToken = (id: ObjectId) => {
 const isValidEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
 
 const isValidPassword = (password: string) =>
-  password.length >= 8 &&
-  /[A-Z]/.test(password) &&
-  /[a-z]/.test(password) &&
-  /[0-9]/.test(password) &&
-  /[!@#$%^&*(),.?":{}|<>]/.test(password);
+  password.length >= 6 && /[A-Za-z0-9]/.test(password);
+
 
   const isValidUsername = (name: string) => /^.{3,30}$/.test(name);
 export const getUserInfo = async (req: Request, res: Response) => {
@@ -69,7 +66,7 @@ export const register = async (req: Request, res: Response) => {
   if (!isValidPassword(password)) {
     res.status(400).json({
       message:
-        "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.",
+        "Password must be at least 6 characters long and include at least one alphanumeric character.",
     });
     return;
   }
@@ -96,7 +93,7 @@ export const register = async (req: Request, res: Response) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "none",
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      maxAge: 24 * 60 * 60 * 1000 * 60, // 1 day
     });
     res
       .status(201)

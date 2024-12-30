@@ -139,12 +139,10 @@ export const addTaskToSchedule = async (req: Request, res: Response) => {
     // La tâche ajoutée sera maintenant dans le tableau schedule.tasks
     const addedTask = schedule.tasks[schedule.tasks.length - 1];
 
-    res
-      .status(200)
-      .json({
-        message: "Task added successfully",
-        data: { id: scheduleId, task: addedTask },
-      });
+    res.status(200).json({
+      message: "Task added successfully",
+      data: { id: scheduleId, task: addedTask },
+    });
   } catch (error) {
     res.status(500).json({ message: "Error adding task", error });
   }
@@ -160,7 +158,7 @@ export const updateTask = async (req: Request, res: Response) => {
 
     if (!schedule) {
       res.status(404).json({ message: "Daily schedule not found" });
-      return
+      return;
     }
 
     // Trouver la tâche dans le tableau des tâches du planning
@@ -168,7 +166,7 @@ export const updateTask = async (req: Request, res: Response) => {
 
     if (!scheduleTask) {
       res.status(404).json({ message: "Task not found" });
-      return
+      return;
     }
 
     // Mettre à jour la tâche avec les nouvelles données
@@ -180,7 +178,10 @@ export const updateTask = async (req: Request, res: Response) => {
     // Retourner la réponse avec la tâche mise à jour
     res
       .status(200)
-      .json({ message: "Task updated successfully", data: {task:scheduleTask, id:scheduleId} });
+      .json({
+        message: "Task updated successfully",
+        data: { task: scheduleTask, id: scheduleId },
+      });
   } catch (error) {
     res.status(500).json({ message: "Error updating task", error });
   }

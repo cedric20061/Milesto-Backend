@@ -41,7 +41,7 @@ DailyScheduleSchema.pre("save", async function (next) {
       const oldestSchedule = schedules[0];
 
       // Assurez-vous que date est bien comparée correctement
-      if (new Date(oldestSchedule.date + "T00:00:00.000Z") < new Date()) {
+      if (new Date(`${oldestSchedule.date}T00:00:00.000Z`) < new Date()) {
         await DailySchedule.findByIdAndDelete(oldestSchedule._id);
       }
     }

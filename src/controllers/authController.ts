@@ -93,7 +93,7 @@ export const register = async (req: Request, res: Response) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "none",
-      maxAge: 24 * 60 * 60 * 1000 * 60, // 1 day
+      maxAge: 24 * 60 * 60 * 1000*60, // 2 mois
     });
     res
       .status(201)

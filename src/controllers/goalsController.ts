@@ -2,6 +2,8 @@ import Goal from "@models/goal";
 import { Response } from "express";
 import { CustomRequest } from "@types";
 import { Types } from "mongoose";
+import { sendPushNotification } from "src/utils/notifications";
+import User from "@models/user";
 
 export const createGoal = async (req: CustomRequest, res: Response) => {
   const {
@@ -51,6 +53,57 @@ export const getAllGoals = async (req: CustomRequest, res: Response) => {
       .json({ message: "Goals retrieved successfully", data: goals });
   } catch (error) {
     res.status(500).json({ message: "Error retrieving goals", error });
+  }
+};
+
+export const goalReminder = async (req: Request, res: Response) => {
+  try {
+    const now = new Date();
+    const goals = await Goal.find({
+      status: { $ne: "complet" },
+    });
+
+    const remindersToSend = [];
+
+    for (const goal of goals) {
+      const createdAt = goal.createdAt;
+      const targetDate = goal.targetDate;
+
+      const totalDuration = targetDate.getTime() - createdAt.getTime();
+      const halfDuration = createdAt.getTime() + totalDuration / 2;
+
+      if (now.getTime() >= halfDuration) {
+        const remainingMs = targetDate.getTime() - now.getTime();
+        const remainingDays = Math.ceil(remainingMs / (1000 * 60 * 60 * 24));
+
+        const remainingMilestones = goal.milestones.filter(m => !m.completed && !m.everyDayAction).length;
+
+        const user = await User.findById(goal.userId);
+        if (!user || !user.pushSubscription) continue;
+
+        const isLate = remainingMs < 0;
+        const message = isLate
+          ? `⚠️ Your goal "${goal.title}" is overdue by ${Math.abs(remainingDays)} day(s). You still have ${remainingMilestones} milestone(s) to complete. Let's get it done!`
+          : `⏳ Your goal "${goal.title}" is halfway to its deadline. You have ${remainingDays} day(s) left and ${remainingMilestones} milestone(s) remaining. Keep going!`;
+
+        const payload = {
+          title: "Goal Reminder",
+          body: message,
+          data: {
+            goalId: goal._id,
+          },
+        };
+
+        remindersToSend.push(sendPushNotification(user.pushSubscription, payload));
+      }
+    }
+
+    await Promise.all(remindersToSend);
+
+    res.status(200).json({ message: "Reminders sent if applicable." });
+  } catch (error) {
+    console.error("Goal reminder error:", error);
+    res.status(500).json({ message: "Server error during goal reminder" });
   }
 };
 

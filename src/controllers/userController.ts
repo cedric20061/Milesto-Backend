@@ -138,6 +138,35 @@ export const updateUserProfile = async (
   }
 };
 
+export const pushSubscription = async (
+  req: CustomRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    const userId = req.user?.id; // Get user ID from the request
+    const subscription = req.body; // Get subscription data from the request body
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+    if (subscription) {
+      // Update the user's subscription in the database
+      user.pushSubscription = subscription;
+      await user.save();
+      res.status(200).json({ message: "Subscription updated successfully" });
+    } else {
+      // If no subscription is provided, clear the existing subscription
+      user.pushSubscription = null;
+      await user.save();
+      res.status(200).json({ message: "Subscription cleared successfully" });
+    }
+  } catch (error) {
+    console.error("Error in pushSubscription:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 // Supprimer le compte de l'utilisateur
 export const deleteUserAccount = async (
   req: CustomRequest,
@@ -174,8 +203,8 @@ export const passwordForgotten = async (req: CustomRequest, res: Response) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      res.status(404).json({message: "Utilisateur non trouvé."});
-      return
+      res.status(404).json({ message: "Utilisateur non trouvé." });
+      return;
     }
 
     const newPassword = generateRandomPassword();

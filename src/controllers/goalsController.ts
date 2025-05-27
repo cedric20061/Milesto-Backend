@@ -56,7 +56,7 @@ export const getAllGoals = async (req: CustomRequest, res: Response) => {
   }
 };
 
-export const goalReminder = async (req: Request, res: Response) => {
+export const goalReminder = async (req: CustomRequest, res: Response) => {
   try {
     const now = new Date();
     const goals = await Goal.find({

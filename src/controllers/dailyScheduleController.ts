@@ -1,6 +1,8 @@
 import DailySchedule from "@models/dailySchedule";
 import { Request, Response } from "express";
 import { CustomRequest } from "@types"; // Import your CustomRequest type
+import User from "@models/user";
+import { sendPushNotification } from "src/utils/notifications";
 
 // Créer un emploi du temps pour une journée spécifique
 export const createOrUpdateDailySchedule = async (
@@ -44,6 +46,80 @@ export const createOrUpdateDailySchedule = async (
       .json({ message: "Error creating or updating daily schedule", error });
   }
 };
+
+export const dailyPlanningReminder = async (_req: Request, res: Response) => {
+  try {
+    const today = new Date();
+    const todayStr = today.toISOString().split("T")[0]; // format YYYY-MM-DD
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStr = tomorrow.toISOString().split("T")[0];
+
+    const users = await User.find({});
+
+    const notificationsToSend = [];
+
+    for (const user of users) {
+      if (!user.pushSubscription) continue;
+
+      const todaySchedule = await DailySchedule.findOne({
+        userId: user._id,
+        date: todayStr,
+      });
+
+      const tomorrowSchedule = await DailySchedule.findOne({
+        userId: user._id,
+        date: tomorrowStr,
+      });
+
+      const hasOverdueTasks =
+        todaySchedule &&
+        todaySchedule.tasks.some((task) => task.status !== "complet");
+
+      const messages: string[] = [];
+
+      if (!todaySchedule) {
+        messages.push(
+          `📅 You haven't created your schedule for today (${todayStr}). Start planning to stay on track.`
+        );
+      } else if (hasOverdueTasks) {
+        const incompleteTasks = todaySchedule.tasks.filter(
+          (task) => task.status !== "complet"
+        );
+        messages.push(
+          `⚠️ You have ${incompleteTasks.length} incomplete task(s) today. Let's finish strong!`
+        );
+      }
+
+      if (!tomorrowSchedule) {
+        messages.push(
+          `🗓️ You haven't planned your day for tomorrow (${tomorrowStr}). Preparing ahead helps boost productivity.`
+        );
+      }
+
+      if (messages.length > 0) {
+        const payload = {
+          title: "Daily Planning Reminder",
+          body: messages.join(" "),
+          data: {
+            userId: user._id,
+          },
+        };
+        notificationsToSend.push(
+          sendPushNotification(user.pushSubscription, payload)
+        );
+      }
+    }
+
+    await Promise.all(notificationsToSend);
+
+    res.status(200).json({ message: "Daily planning reminders sent." });
+  } catch (error) {
+    console.error("Daily planning reminder error:", error);
+    res.status(500).json({ message: "Error sending planning reminders" });
+  }
+};
+
 // Récupérer l'emploi du temps d'un utilisateur pour une date spécifique
 export const getUserDailySchedule = async (
   req: CustomRequest,
@@ -176,12 +252,10 @@ export const updateTask = async (req: Request, res: Response) => {
     await schedule.save();
 
     // Retourner la réponse avec la tâche mise à jour
-    res
-      .status(200)
-      .json({
-        message: "Task updated successfully",
-        data: { task: scheduleTask, id: scheduleId },
-      });
+    res.status(200).json({
+      message: "Task updated successfully",
+      data: { task: scheduleTask, id: scheduleId },
+    });
   } catch (error) {
     res.status(500).json({ message: "Error updating task", error });
   }

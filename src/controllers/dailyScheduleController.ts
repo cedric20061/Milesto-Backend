@@ -58,7 +58,7 @@ export const dailyPlanningReminder = async (_req: Request, res: Response) => {
     const users = await User.find({});
 
     const notificationsToSend = [];
-
+    let userName = "";
     for (const user of users) {
       if (!user.pushSubscription) continue;
 
@@ -108,12 +108,15 @@ export const dailyPlanningReminder = async (_req: Request, res: Response) => {
         notificationsToSend.push(
           sendPushNotification(user.pushSubscription, payload)
         );
+        userName = user.name || "User";
       }
     }
 
     await Promise.all(notificationsToSend);
 
-    res.status(200).json({ message: "Daily planning reminders sent." });
+    res
+      .status(200)
+      .json({ message: `Daily planning reminders sent.(${userName})` });
   } catch (error) {
     console.error("Daily planning reminder error:", error);
     res.status(500).json({ message: "Error sending planning reminders" });

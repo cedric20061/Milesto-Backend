@@ -11,6 +11,7 @@ if (process.env.NODE_ENV === "production") {
     "@routes": __dirname + "/src/routes",
     "@config": __dirname + "/src/config",
     "@types": __dirname + "/types",
+    "@utils": __dirname + "/src/utils",
   });
 }
 

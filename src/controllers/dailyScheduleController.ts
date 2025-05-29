@@ -2,7 +2,7 @@ import DailySchedule from "@models/dailySchedule";
 import { Request, Response } from "express";
 import { CustomRequest } from "@types"; // Import your CustomRequest type
 import User from "@models/user";
-import { sendPushNotification } from "src/utils/notifications";
+import { sendPushNotification } from "@utils/notifications";
 
 // Créer un emploi du temps pour une journée spécifique
 export const createOrUpdateDailySchedule = async (

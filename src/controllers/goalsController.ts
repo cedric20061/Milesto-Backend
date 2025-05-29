@@ -2,7 +2,7 @@ import Goal from "@models/goal";
 import { Response } from "express";
 import { CustomRequest } from "@types";
 import { Types } from "mongoose";
-import { sendPushNotification } from "src/utils/notifications";
+import { sendPushNotification } from "@utils/notifications";
 import User from "@models/user";
 
 export const createGoal = async (req: CustomRequest, res: Response) => {

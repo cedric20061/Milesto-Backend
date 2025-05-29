@@ -20,6 +20,7 @@
       "@controllers/*": ["src/controllers/*"],
       "@routes/*": ["src/routes/*"],
       "@config/*": ["src/config/*"],
+      "@utils/*": ["src/utils/*"],
       "@middlewares/*": ["src/middlewares/*"],
       "@types": ["types.ts"]
     }

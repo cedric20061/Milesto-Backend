@@ -116,7 +116,7 @@ export const dailyPlanningReminder = async (_req: Request, res: Response) => {
 
     res
       .status(200)
-      .json({ message: `Daily planning reminders sent. (to-${userName})` });
+      .json({ message: `Daily planning reminders sent. (to -${userName})` });
   } catch (error) {
     console.error("Daily planning reminder error:", error);
     res.status(500).json({ message: "Error sending planning reminders" });

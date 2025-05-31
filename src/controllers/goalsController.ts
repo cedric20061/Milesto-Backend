@@ -63,47 +63,74 @@ export const goalReminder = async (req: CustomRequest, res: Response) => {
       status: { $ne: "complet" },
     });
 
+    // Regrouper les objectifs par utilisateur
+    const goalsByUser: Record<string, typeof goals> = {};
+    for (const goal of goals) {
+      const userIdStr = goal.userId.toString();
+      if (!goalsByUser[userIdStr]) {
+        goalsByUser[userIdStr] = [];
+      }
+      goalsByUser[userIdStr].push(goal);
+    }
+
     const remindersToSend = [];
 
-    for (const goal of goals) {
-      const createdAt = goal.createdAt;
-      const targetDate = goal.targetDate;
+    for (const [userId, userGoals] of Object.entries(goalsByUser)) {
+      const user = await User.findById(userId);
+      if (!user || !user.pushSubscription) continue;
 
-      const totalDuration = targetDate.getTime() - createdAt.getTime();
-      const halfDuration = createdAt.getTime() + totalDuration / 2;
+      const messages: string[] = [];
 
-      if (now.getTime() >= halfDuration) {
-        const remainingMs = targetDate.getTime() - now.getTime();
-        const remainingDays = Math.ceil(remainingMs / (1000 * 60 * 60 * 24));
+      for (const goal of userGoals) {
+        const createdAt = goal.createdAt;
+        const targetDate = goal.targetDate;
 
-        const remainingMilestones = goal.milestones.filter(m => !m.completed && !m.everyDayAction).length;
+        const totalDuration = targetDate.getTime() - createdAt.getTime();
+        const halfDuration = createdAt.getTime() + totalDuration / 2;
 
-        const user = await User.findById(goal.userId);
-        if (!user || !user.pushSubscription) continue;
+        if (now.getTime() >= halfDuration) {
+          const remainingMs = targetDate.getTime() - now.getTime();
+          const remainingDays = Math.ceil(remainingMs / (1000 * 60 * 60 * 24));
+          const remainingMilestones = goal.milestones.filter(
+            (m) => !m.completed && !m.everyDayAction
+          ).length;
 
-        const isLate = remainingMs < 0;
-        const message = isLate
-          ? `⚠️ Your goal "${goal.title}" is overdue by ${Math.abs(remainingDays)} day(s). You still have ${remainingMilestones} milestone(s) to complete. Let's get it done!`
-          : `⏳ Your goal "${goal.title}" is halfway to its deadline. You have ${remainingDays} day(s) left and ${remainingMilestones} milestone(s) remaining. Keep going!`;
+          const isLate = remainingMs < 0;
+          const message = isLate
+            ? `⚠️ "${goal.title}" est en retard de ${Math.abs(
+                remainingDays
+              )} jour(s). Il reste ${remainingMilestones} étape(s).`
+            : `⏳ "${goal.title}" est à mi-chemin de sa date limite. Il reste ${remainingDays} jour(s) et ${remainingMilestones} étape(s).`;
 
+          messages.push(message);
+        }
+      }
+
+      if (messages.length > 0) {
         const payload = {
-          title: "Goal Reminder",
-          body: message,
+          title: "📌 Rappel de vos objectifs",
+          body: messages.join("\n"),
           data: {
-            goalId: goal._id,
+            userId: user._id,
           },
         };
 
-        remindersToSend.push(sendPushNotification(user.pushSubscription, payload));
+        remindersToSend.push(
+          sendPushNotification(user.pushSubscription, payload)
+        );
       }
     }
 
     await Promise.all(remindersToSend);
 
-    res.status(200).json({ message: "Reminders sent if applicable." });
+    res
+      .status(200)
+      .json({ message: "Rappels envoyés par utilisateur si nécessaire." });
   } catch (error) {
-    console.error("Goal reminder error:", error);
-    res.status(500).json({ message: "Server error during goal reminder" });
+    console.error("Erreur dans le rappel d'objectif :", error);
+    res
+      .status(500)
+      .json({ message: "Erreur serveur lors du rappel d'objectif." });
   }
 };
 

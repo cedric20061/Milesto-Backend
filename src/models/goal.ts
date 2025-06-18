@@ -6,6 +6,7 @@ const GoalSchema = new Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
     category: { type: String, required: true },
+    step: {type: Number},
     priority: { type: String, enum: ['haute', 'moyenne', 'basse'], default: 'moyenne' },
     status: { type: String, enum: ['non démarré', 'en cours', 'complet'], default: 'non démarré' },
     targetDate: { type: Date, required: true },
@@ -13,6 +14,7 @@ const GoalSchema = new Schema({
     milestones: [{ // Tableau de jalons
         title: { type: String, required: true }, // Titre du jalon
         description: { type: String }, // Description du jalon
+        step: { type: Number }, // Étape du jalon
         targetDate: { type: Date, required: true }, // Date cible du jalon
         completed: {type: Boolean, default: false},
         everyDayAction: {type:Boolean, default:false},

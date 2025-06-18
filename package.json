@@ -42,6 +42,7 @@
     "@controllers": "dist/src/controllers",
     "@middlewares": "dist/src/middlewares",
     "@routes": "dist/src/routes",
+    "@utils": "dist/src/utils",
     "@config": "dist/src/config",
     "@types": "dist/types.js"
   }

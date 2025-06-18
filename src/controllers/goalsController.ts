@@ -8,6 +8,7 @@ import User from "@models/user";
 export const createGoal = async (req: CustomRequest, res: Response) => {
   const {
     title,
+    step,
     description,
     category,
     priority,
@@ -21,6 +22,7 @@ export const createGoal = async (req: CustomRequest, res: Response) => {
     const newGoal = new Goal({
       userId,
       title,
+      step,
       description,
       category,
       priority,
@@ -161,6 +163,7 @@ export const updateGoal = async (req: CustomRequest, res: Response) => {
   const {
     title,
     description,
+    step,
     category,
     priority,
     status,
@@ -186,6 +189,7 @@ export const updateGoal = async (req: CustomRequest, res: Response) => {
         return milestone;
       }) as Types.DocumentArray<{
         title: string;
+        step: number;
         status: "non démarré" | "en cours" | "complet";
         targetDate: NativeDate;
         completed: boolean;
@@ -205,6 +209,7 @@ export const updateGoal = async (req: CustomRequest, res: Response) => {
 
     // 3. Mise à jour des autres champs de l'objectif principal
     goal.title = title || goal.title;
+    goal.step = step || goal.step;
     goal.description = description || goal.description;
     goal.category = category || goal.category;
     goal.priority = priority || goal.priority;
@@ -242,7 +247,7 @@ export const deleteGoal = async (req: CustomRequest, res: Response) => {
 // Ajouter un nouveau jalon à un objectif
 export const addMilestoneToGoal = async (req: CustomRequest, res: Response) => {
   const { goalId } = req.params;
-  const { title, description, targetDate, status } = req.body;
+  const { title, step, description, targetDate, status } = req.body;
 
   try {
     const goal = await Goal.findById(goalId);
@@ -253,6 +258,7 @@ export const addMilestoneToGoal = async (req: CustomRequest, res: Response) => {
 
     const newMilestone = {
       title,
+      step,
       description,
       targetDate: new Date(targetDate),
       status: status || "non démarré",
@@ -288,7 +294,7 @@ export const getAllMilestones = async (req: CustomRequest, res: Response) => {
 // Mettre à jour un jalon spécifique
 export const updateMilestone = async (req: CustomRequest, res: Response) => {
   const { goalId, milestoneId } = req.params;
-  const { title, description, targetDate, status } = req.body;
+  const { title, step, description, targetDate, status } = req.body;
 
   try {
     const goal = await Goal.findById(goalId);
@@ -304,6 +310,7 @@ export const updateMilestone = async (req: CustomRequest, res: Response) => {
     }
 
     milestone.title = title || milestone.title;
+    milestone.step = step || milestone.step;
     milestone.description = description || milestone.description;
     milestone.targetDate = targetDate
       ? new Date(targetDate)

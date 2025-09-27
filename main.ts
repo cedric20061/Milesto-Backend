@@ -21,6 +21,7 @@ import cookieParser from "cookie-parser";
 import connectDB from "@config/db";
 import authRoutes from "@routes/authRoutes";
 import goalsRoutes from "@routes/goalsRoutes";
+import todoRoutes from "@routes/toDoRoutes";
 import dailySchedule from "@routes/dailyScheduleRoutes";
 import userRoutes from "@routes/userRoutes";
 import cors from "cors";
@@ -43,6 +44,7 @@ app.options("*", cors());
 
 app.use(authRoutes);
 app.use(goalsRoutes);
+app.use(todoRoutes);
 app.use(dailySchedule);
 app.use(userRoutes);
 app.use((req, res, next) => {

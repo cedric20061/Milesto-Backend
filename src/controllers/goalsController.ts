@@ -44,7 +44,6 @@ export const createGoal = async (req: CustomRequest, res: Response) => {
 // Récupérer tous les objectifs d'un utilisateur
 export const getAllGoals = async (req: CustomRequest, res: Response) => {
   const userId = req.user?.id;
-
   try {
     const goals = await Goal.find({ userId })
       .populate("dependencies", "title status")

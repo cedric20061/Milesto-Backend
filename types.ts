@@ -15,6 +15,7 @@ export interface UserType {
 }
 
 export interface UserInterface {
+  _id: string;
   id: string;
   name: string;
   email: string;

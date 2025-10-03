@@ -53,7 +53,6 @@ export const getAllGoals = async (req: CustomRequest, res: Response) => {
       .status(200)
       .json({ message: "Goals retrieved successfully", data: goals });
   } catch (error) {
-    console.error(req.user);
     res.status(500).json({ message: "Error retrieving goals", error });
   }
 };
